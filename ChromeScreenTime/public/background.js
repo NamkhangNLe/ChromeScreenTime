@@ -8,6 +8,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
         chrome.tabs.get(activeTabId, (tab) => {
             if (tab && tab.url) {
                 const url = new URL(tab.url).hostname;
+                if (url.startsWith("www.")) { url.substring(4); }
                 chrome.storage.local.get(['urls'], (result) => {
                     let urls = result.urls || {};
                     if (urls[url]) {
@@ -42,6 +43,7 @@ chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
         chrome.tabs.get(tabId, (tab) => {
             if (tab && tab.url) {
                 const url = new URL(tab.url).hostname;
+                if (url.startsWith("www.")) { url.substring(4); }
                 chrome.storage.local.get(['urls'], (result) => {
                     let urls = result.urls || {};
                     if (urls[url]) {
