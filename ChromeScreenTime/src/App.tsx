@@ -856,7 +856,6 @@ function App() {
     ["ubuntu.com", "Productivity"],
     ["prweb.com", "News"],
     ["bleepingcomputer.com", "Productivity"],
-    const additionalKeyValuePairs: [string, string][] = [
       ["universal-music.co.jp", "Entertainment"],
       ["dl.acm.org", "Education"],
       ["curia.europa.eu", "Education"],
@@ -1109,9 +1108,7 @@ function App() {
       ["urldefense.com", "Productivity"]
     ];
 
-    const keyValuePairsMap = new Map<string, string>([...keyValuePairs, ...additionalKeyValuePairs]);
-  ]
-
+    const keyValuePairsMap = new Map<string, string>(keyValuePairs);
   return (
     <>
     <h1>Chrome Screen Time</h1>
