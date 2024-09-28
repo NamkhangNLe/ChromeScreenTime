@@ -41,6 +41,14 @@ function App() {
     ],
   };
 
+  const options = {
+    plugins: {
+      legend: {
+        position: 'right' as const,
+      },
+    },
+  };
+
   const keyValuePairs: [string, string][] = [
     ["facebook.com", "Entertainment"],
     ["fonts.googleapis.com", "Productivity"],
@@ -1068,32 +1076,30 @@ function App() {
     ],
   };
 
-  const newTab = () => {
-    chrome.tabs.create({ url: 'about:blank' });
-  };
-
   return (
     <>
-    <h1>Chrome Screen Time</h1>
-      <div className = "chart-container">
-        <Doughnut data={data} />
-      </div>
-      <div className="chart-container">
-        <Bar data={dataCategories} />
-      </div>
-      <div className="card">
-        <button onClick={newTab}>
-          Calendar View
-        </button>
-        <h2>URLs Hashmap Contents:</h2>
-        <ul>
-          {Object.entries(urls).map(([url, timeSpent]) => (
-            <li key={url}>{url}: {timeSpent} ms</li>
-          ))}
-        </ul>
-      </div>
+      <h1>Chrome Screen Time</h1>
+        <h2>Donut Chart Breakdown:</h2>
+          <div className="chart-container">
+            <Doughnut data={data} options={options} />
+          </div>
+          <h2>Bar Graph by Website Category:</h2>
+          <div className="chart-container">
+            <Bar data={dataCategories} />
+          </div>
+          <div className="card">
+            {/* <button onClick={}>
+              Calendar View
+            </button> */}
+            <h2>Time Spent per Website:</h2>
+            <ul>
+              {Object.entries(urls).map(([url, timeSpent]) => (
+                <li key={url}>{url}: {timeSpent} ms</li>
+              ))}
+            </ul>
+          </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
