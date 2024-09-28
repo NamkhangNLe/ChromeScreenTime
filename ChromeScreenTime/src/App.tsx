@@ -1,8 +1,16 @@
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { useState, useEffect } from 'react'
 
 function App() {
+  const [urls, setUrls] = useState<{ [key: string]: number }>({});
+
+  useEffect(() => {
+    chrome.storage.local.get(['urls'], (result) => {
+      setUrls(result.urls || {});
+    });
+  }, []);
   
   const onclick = async () => {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -29,13 +37,13 @@ function App() {
         <button onClick={() => onclick()}>
           Click me
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+        <h2>URLs Hashmap Contents:</h2>
+        <ul>
+          {Object.entries(urls).map(([url, timeSpent]) => (
+            <li key={url}>{url}: {timeSpent} ms</li>
+          ))}
+        </ul>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }

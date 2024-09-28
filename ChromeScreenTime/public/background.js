@@ -7,7 +7,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
         const timeSpent = Date.now() - activeTabStartTime;
         chrome.tabs.get(activeTabId, (tab) => {
             if (tab && tab.url) {
-                const url = tab.url;
+                const url = new URL(tab.url).hostname;
                 chrome.storage.local.get(['urls'], (result) => {
                     let urls = result.urls || {};
                     if (urls[url]) {
@@ -16,7 +16,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
                         urls[url] = timeSpent;
                     }
                     chrome.storage.local.set({ urls }, () => {
-                        console.log('URL time updated:', urls);
+                        console.log('URL time updated (onActivated):', urls);
                     });
                 });
             }
@@ -41,7 +41,7 @@ chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
         const timeSpent = Date.now() - activeTabStartTime;
         chrome.tabs.get(tabId, (tab) => {
             if (tab && tab.url) {
-                const url = tab.url;
+                const url = new URL(tab.url).hostname;
                 chrome.storage.local.get(['urls'], (result) => {
                     let urls = result.urls || {};
                     if (urls[url]) {
@@ -50,7 +50,7 @@ chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
                         urls[url] = timeSpent;
                     }
                     chrome.storage.local.set({ urls }, () => {
-                        console.log('URL time updated:', urls);
+                        console.log('URL time updated (onRemoved):', urls);
                     });
                 });
             }
