@@ -15,6 +15,9 @@
     "http://*/*",
     "https://*/*"
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "icons": {
     "32": "bee1.png"
   }
