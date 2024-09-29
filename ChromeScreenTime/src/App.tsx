@@ -1069,8 +1069,20 @@ function App() {
       {
         label: 'Time Spent (ms)',
         data: Object.values(categoryData),
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+        ],
         borderWidth: 1,
       },
     ],
@@ -1078,6 +1090,9 @@ function App() {
 
   return (
     <>
+    <button>
+              Calendar View
+            </button>
       <h1>Chrome Screen Time</h1>
         <h2>Donut Chart Breakdown:</h2>
           <div className="chart-container">
@@ -1088,9 +1103,6 @@ function App() {
             <Bar data={dataCategories} />
           </div>
           <div className="card">
-            {/* <button onClick={}>
-              Calendar View
-            </button> */}
             <h2>Time Spent per Website:</h2>
             <ul>
               {Object.entries(urls).map(([url, timeSpent]) => (
