@@ -13,6 +13,7 @@ function App() {
       setUrls(result.urls || {});
     });
   }, []);
+  
 
   const data = {
     labels: Object.keys(urls),
@@ -1087,12 +1088,13 @@ function App() {
       },
     ],
   };
+  
 
   return (
     <>
-    <button>
-              Calendar View
-            </button>
+    <button onClick={() => window.open('calendar.html', '_blank')}>
+      Calendar View
+      </button>
       <h1>Chrome Screen Time</h1>
         <h2>Donut Chart Breakdown:</h2>
           <div className="chart-container">
@@ -1114,4 +1116,15 @@ function App() {
   );
 }
 
+export function getUrlTimes() {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get(['urls'], (result) => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve(result.urls || {});
+      }
+    });
+  });
+}
 export default App;
