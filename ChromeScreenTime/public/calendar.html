@@ -3,13 +3,268 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calendar View</title>
-  <link rel="stylesheet" href="/ChromeScreenTime/ChromeScreenTime/src/styles.css"> <!-- Link to your CSS file -->
+  <title>Calendar — Chrome Screen Time</title>
+  <style>
+    :root {
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+      color: #1c1917;
+      background: #fdf6e3;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #fdf6e3; }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 28px 20px 48px; }
+    header { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+    header img { width: 44px; height: 44px; border-radius: 12px; object-fit: cover; box-shadow: 0 2px 8px rgba(180,83,9,.25); }
+    h1 { font-size: 22px; margin: 0; letter-spacing: -.02em; }
+    .sub { color: #78716c; font-size: 13px; margin: 2px 0 0; }
+    .nav { display: flex; align-items: center; gap: 10px; margin: 18px 0 16px; }
+    .nav button {
+      border: 1px solid #e7d9b8; background: #fffaf0; color: #57534e;
+      font: inherit; font-size: 13px; font-weight: 700;
+      border-radius: 10px; padding: 8px 14px; cursor: pointer;
+    }
+    .nav button:hover { background: #fef3c7; }
+    .nav .week-label { font-weight: 800; font-size: 15px; flex: 1; text-align: center; }
+    .week-total {
+      display: flex; gap: 24px; background: #fffaf0; border: 1px solid #f0e2c0;
+      border-radius: 16px; padding: 14px 18px; margin-bottom: 16px;
+    }
+    .week-total .stat b { display: block; font-size: 20px; letter-spacing: -.02em; }
+    .week-total .stat span { font-size: 12px; color: #78716c; }
+    .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 20px; }
+    @media (max-width: 720px) { .days { grid-template-columns: repeat(2, 1fr); } }
+    .day {
+      background: #fffaf0; border: 1px solid #f0e2c0; border-radius: 14px;
+      padding: 12px; cursor: pointer; text-align: left; font: inherit; color: inherit;
+    }
+    .day:hover { border-color: #f59e0b; }
+    .day.selected { border-color: #f59e0b; box-shadow: 0 0 0 2px #fde68a; }
+    .day.today { background: #fef3c7; }
+    .day .dow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #92400e; }
+    .day .date { font-size: 13px; color: #78716c; }
+    .day .total { display: block; font-size: 17px; font-weight: 800; margin: 6px 0 8px; }
+    .day .top { font-size: 11.5px; color: #57534e; line-height: 1.6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .day .none { font-size: 11.5px; color: #a8a29e; }
+    .panel { background: #fffaf0; border: 1px solid #f0e2c0; border-radius: 16px; padding: 18px; margin-bottom: 16px; }
+    .panel h2 { font-size: 15px; margin: 0 0 4px; }
+    .panel .hint { font-size: 12.5px; color: #78716c; margin: 0 0 14px; }
+    .hours { display: flex; align-items: flex-end; gap: 3px; height: 120px; }
+    .hour-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+    .hour-bar { width: 100%; max-width: 22px; background: #f59e0b; border-radius: 4px 4px 0 0; min-height: 2px; }
+    .hour-label { font-size: 9.5px; color: #a8a29e; }
+    .site-list { list-style: none; margin: 0; padding: 0; }
+    .site-list li { padding: 8px 0; border-top: 1px solid #f5eeda; }
+    .site-list li:first-child { border-top: 0; }
+    .site-row { display: flex; gap: 8px; align-items: baseline; }
+    .site-name { font-weight: 600; font-size: 13.5px; }
+    .site-time { margin-left: auto; font-weight: 700; font-size: 13px; font-variant-numeric: tabular-nums; }
+    .bar-track { height: 6px; background: #f5eeda; border-radius: 999px; margin-top: 6px; overflow: hidden; }
+    .bar-fill { height: 100%; background: #f59e0b; border-radius: 999px; }
+    .empty { color: #78716c; font-size: 13.5px; text-align: center; padding: 24px 0; }
+    .back { display: inline-block; margin-top: 8px; font-size: 13px; font-weight: 600; color: #92400e; text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    .privacy { font-size: 12px; color: #a8a29e; text-align: center; margin-top: 20px; }
+  </style>
 </head>
 <body>
-  <h1>Calendar View</h1>
-  <div id="calendar"></div> <!-- Calendar container -->
-  <div id="hour-breakdown"></div> <!-- Hour Breakdown container -->
-  <script src="/ChromeScreenTime/ChromeScreenTime/src/script.js"></script> <!-- Link to your JavaScript file -->
+  <div class="wrap">
+    <header>
+      <img src="./bee1.png" alt="">
+      <div>
+        <h1>Calendar</h1>
+        <p class="sub">Your week, day by day. Click a day to see its hours and sites.</p>
+      </div>
+    </header>
+
+    <div class="nav">
+      <button id="prev-week">← Prev</button>
+      <span class="week-label" id="week-label"></span>
+      <button id="this-week">This week</button>
+      <button id="next-week">Next →</button>
+    </div>
+
+    <div class="week-total">
+      <div class="stat"><b id="week-total">0m</b><span>this week</span></div>
+      <div class="stat"><b id="week-avg">0m</b><span>daily average</span></div>
+      <div class="stat"><b id="week-days">0 / 7</b><span>days with data</span></div>
+    </div>
+
+    <div class="days" id="days"></div>
+
+    <div class="panel">
+      <h2 id="detail-title">Hour breakdown</h2>
+      <p class="hint">When during the day you were browsing, in minutes per hour.</p>
+      <div class="hours" id="hours"></div>
+    </div>
+
+    <div class="panel">
+      <h2 id="sites-title">Sites</h2>
+      <p class="hint">Ranked by time on the selected day.</p>
+      <ul class="site-list" id="sites"></ul>
+    </div>
+
+    <a class="back" href="./index.html">← Back to dashboard</a>
+    <p class="privacy">All data stays on your device in chrome.storage.local. Nothing is uploaded anywhere.</p>
+  </div>
+
+  <script>
+    // Self-contained calendar view. Reads the same chrome.storage.local
+    // stores the background worker writes: daily { day: { host: ms } }
+    // and hourly { day: { "0".."23": ms } }.
+    const MS_PER_MINUTE = 60 * 1000;
+
+    function fmt(ms) {
+      if (ms < MS_PER_MINUTE) return Math.max(0, Math.round(ms / 1000)) + 's';
+      const h = Math.floor(ms / 3600000);
+      const m = Math.round((ms % 3600000) / MS_PER_MINUTE);
+      if (h === 0) return m + 'm';
+      return m === 0 ? h + 'h' : h + 'h ' + m + 'm';
+    }
+
+    function dayKey(d) {
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return d.getFullYear() + '-' + m + '-' + day;
+    }
+
+    function parseDay(key) {
+      const [y, m, d] = key.split('-').map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    function startOfWeek(d) {
+      const out = new Date(d);
+      const dow = (out.getDay() + 6) % 7; // Monday = 0
+      out.setDate(out.getDate() - dow);
+      out.setHours(0, 0, 0, 0);
+      return out;
+    }
+
+    function shortDate(d) {
+      return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    }
+
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    let daily = {};
+    let hourly = {};
+    let weekStart = startOfWeek(new Date());
+    let selectedDay = dayKey(new Date());
+
+    function weekDays() {
+      const days = [];
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(weekStart);
+        d.setDate(d.getDate() + i);
+        days.push(d);
+      }
+      return days;
+    }
+
+    function render() {
+      const days = weekDays();
+      const end = new Date(weekStart);
+      end.setDate(end.getDate() + 6);
+      document.getElementById('week-label').textContent =
+        shortDate(weekStart) + ' – ' + shortDate(end);
+
+      let weekTotal = 0;
+      let daysWithData = 0;
+      const daysEl = document.getElementById('days');
+      daysEl.innerHTML = '';
+
+      for (const d of days) {
+        const key = dayKey(d);
+        const sites = daily[key] || {};
+        const total = Object.values(sites).reduce((a, b) => a + b, 0);
+        if (total > 0) { weekTotal += total; daysWithData++; }
+
+        const top = Object.entries(sites).sort((a, b) => b[1] - a[1]).slice(0, 3);
+        const btn = document.createElement('button');
+        btn.className = 'day' + (key === selectedDay ? ' selected' : '') + (key === dayKey(new Date()) ? ' today' : '');
+        btn.innerHTML =
+          '<span class="dow">' + d.toLocaleDateString(undefined, { weekday: 'short' }) + '</span> ' +
+          '<span class="date">' + shortDate(d) + '</span>' +
+          '<span class="total">' + fmt(total) + '</span>' +
+          (top.length
+            ? top.map(([s, ms]) => '<span class="top">' + esc(s) + ' · ' + fmt(ms) + '</span>').join('<br>')
+            : '<span class="none">No data</span>');
+        btn.addEventListener('click', () => { selectedDay = key; render(); });
+        daysEl.appendChild(btn);
+      }
+
+      document.getElementById('week-total').textContent = fmt(weekTotal);
+      document.getElementById('week-avg').textContent = fmt(Math.round(weekTotal / 7));
+      document.getElementById('week-days').textContent = daysWithData + ' / 7';
+
+      // Hour breakdown for the selected day.
+      const selDate = parseDay(selectedDay);
+      document.getElementById('detail-title').textContent =
+        'Hour breakdown — ' + selDate.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
+      const hours = hourly[selectedDay] || {};
+      const hoursEl = document.getElementById('hours');
+      hoursEl.innerHTML = '';
+      const max = Math.max(1, ...Object.values(hours));
+      for (let h = 0; h < 24; h++) {
+        const ms = hours[String(h)] || 0;
+        const col = document.createElement('div');
+        col.className = 'hour-col';
+        col.title = h + ':00 — ' + fmt(ms);
+        const pct = Math.max(ms > 0 ? 3 : 0, Math.round((ms / max) * 100));
+        col.innerHTML = '<div class="hour-bar" style="height:' + pct + '%"></div><span class="hour-label">' + h + '</span>';
+        hoursEl.appendChild(col);
+      }
+
+      // Sites for the selected day.
+      document.getElementById('sites-title').textContent =
+        'Sites — ' + selDate.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
+      const sites = daily[selectedDay] || {};
+      const total = Object.values(sites).reduce((a, b) => a + b, 0);
+      const listEl = document.getElementById('sites');
+      listEl.innerHTML = '';
+      if (total === 0) {
+        listEl.innerHTML = '<li class="empty">No browsing recorded on this day yet.</li>';
+      } else {
+        for (const [site, ms] of Object.entries(sites).sort((a, b) => b[1] - a[1])) {
+          const li = document.createElement('li');
+          const pct = Math.round((ms / total) * 100);
+          li.innerHTML =
+            '<div class="site-row"><span class="site-name">' + esc(site) + '</span>' +
+            '<span class="site-time">' + fmt(ms) + '</span></div>' +
+            '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>';
+          listEl.appendChild(li);
+        }
+      }
+    }
+
+    function shiftWeek(delta) {
+      weekStart.setDate(weekStart.getDate() + delta * 7);
+      render();
+    }
+
+    document.getElementById('prev-week').addEventListener('click', () => shiftWeek(-1));
+    document.getElementById('next-week').addEventListener('click', () => shiftWeek(1));
+    document.getElementById('this-week').addEventListener('click', () => {
+      weekStart = startOfWeek(new Date());
+      selectedDay = dayKey(new Date());
+      render();
+    });
+
+    function load() {
+      if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+        chrome.storage.local.get(['daily', 'hourly'], (result) => {
+          daily = result.daily || {};
+          hourly = result.hourly || {};
+          render();
+        });
+      } else {
+        render(); // plain-browser preview: empty state
+      }
+    }
+
+    load();
+  </script>
 </body>
 </html>

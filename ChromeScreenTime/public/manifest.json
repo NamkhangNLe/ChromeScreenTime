@@ -1,24 +1,31 @@
 {
-  "manifest_version": 3,
-  "version": "1.0",
-  "name": "Chrome Screen Time",
   "action": {
-    "default_popup": "index.html"
+    "default_icon": "bee1.png",
+    "default_popup": "index.html",
+    "default_title": "Chrome Screen Time"
   },
-  "permissions": [
-    "tabs",
-    "activeTab",
-    "scripting",
-    "storage"
-  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "description": "See where your time goes. Tracks time per site, shows a daily and weekly breakdown, and nudges you when you pass a limit you set.",
   "host_permissions": [
     "http://*/*",
     "https://*/*"
   ],
-  "background": {
-    "service_worker": "background.js"
-  },
   "icons": {
-    "32": "bee1.png"
-  }
+    "16": "bee1.png",
+    "32": "bee1.png",
+    "48": "bee1.png",
+    "128": "bee1.png"
+  },
+  "manifest_version": 3,
+  "name": "Chrome Screen Time",
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "scripting",
+    "storage",
+    "notifications"
+  ],
+  "version": "1.1"
 }

@@ -1,50 +1,359 @@
-#root {
-  max-width: 1280px;
+/* Chrome Screen Time — honey theme.
+   Warm cream background, amber accent, near-black ink. Designed for the
+   extension popup (~480px wide) and scales up when opened as a full tab. */
+
+.app {
+  width: 480px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 16px 16px 24px;
+  color: #1c1917;
+}
+
+@media (min-width: 640px) {
+  .app {
+    width: 720px;
+    padding: 28px 28px 40px;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.header .logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(180, 83, 9, 0.25);
+}
+
+.header h1 {
+  font-size: 20px;
+  line-height: 1.1;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  margin: 2px 0 0;
+  font-size: 12.5px;
+  color: #78716c;
+}
+
+.demo-badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #92400e;
+  background: #fde68a;
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: #f5eeda;
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 14px;
+}
+
+.tabs button {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  color: #57534e;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 8px 0;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.tabs button.active {
+  background: #fffaf0;
+  color: #1c1917;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.stat {
+  background: #fffaf0;
+  border: 1px solid #f0e2c0;
+  border-radius: 14px;
+  padding: 12px 10px;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.stat-value {
+  display: block;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #1c1917;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.stat-label {
+  display: block;
+  font-size: 11.5px;
+  color: #78716c;
+  margin-top: 2px;
 }
 
 .card {
-  padding: 2em;
+  background: #fffaf0;
+  border: 1px solid #f0e2c0;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
 }
 
-.read-the-docs {
-  color: #888;
+.card h2 {
+  font-size: 15px;
+  margin: 0 0 12px;
+  letter-spacing: -0.01em;
 }
 
-/* App.css */
-.chart-container {
+.chart-wrap {
+  position: relative;
+  height: 240px;
+}
+
+.chart-wrap.short {
+  height: 170px;
+}
+
+.site-list,
+.day-list,
+.limit-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.site-list li,
+.limit-list li {
+  padding: 9px 0;
+  border-top: 1px solid #f5eeda;
+}
+
+.site-list li:first-child,
+.limit-list li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.site-row {
   display: flex;
-  justify-content: center;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.site-name {
+  font-weight: 600;
+  font-size: 13.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.site-cat {
+  font-size: 11px;
+  font-weight: 600;
+  color: #92400e;
+  background: #fef3c7;
+  border-radius: 999px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.site-time {
+  margin-left: auto;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.bar-track {
+  height: 6px;
+  background: #f5eeda;
+  border-radius: 999px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: #f59e0b;
+  border-radius: 999px;
+}
+
+.bar-fill.over {
+  background: #dc2626;
+}
+
+.limit-note {
+  font-size: 11.5px;
+  color: #78716c;
+  margin-top: 4px;
+}
+
+.limit-note.over {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.day-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-top: 1px solid #f5eeda;
+  font-size: 13.5px;
+}
+
+.day-list li:first-child {
+  border-top: 0;
+}
+
+.day-total {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.btn {
+  flex: 1;
+  border: 0;
+  border-radius: 12px;
+  background: #f59e0b;
+  color: #1c1917;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 12px 14px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.35);
+}
+
+.btn:hover {
+  background: #fbbf24;
+}
+
+.btn.ghost {
+  background: #fffaf0;
+  border: 1px solid #e7d9b8;
+  box-shadow: none;
+  color: #57534e;
+}
+
+.hint {
+  font-size: 13px;
+  color: #57534e;
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+
+.limit-form {
+  display: flex;
+  gap: 8px;
   align-items: center;
-  height: 400px; /* Adjust the height as needed */
+  margin-bottom: 12px;
+}
+
+.limit-form input {
+  font: inherit;
+  font-size: 13.5px;
+  border: 1px solid #e7d9b8;
+  border-radius: 10px;
+  padding: 9px 10px;
+  background: #fff;
+  color: #1c1917;
+  min-width: 0;
+}
+
+.limit-form input:first-child {
+  flex: 2;
+}
+
+.limit-form input:nth-child(2) {
+  flex: 0 0 64px;
+  text-align: center;
+}
+
+.min-label {
+  font-size: 12px;
+  color: #78716c;
+  white-space: nowrap;
+}
+
+.limit-form .btn {
+  flex: 0 0 auto;
+  padding: 9px 14px;
+}
+
+.remove {
+  border: 0;
+  background: transparent;
+  color: #a8a29e;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+}
+
+.remove:hover {
+  color: #dc2626;
+}
+
+.empty {
+  background: #fffaf0;
+  border: 1px dashed #e7d9b8;
+  border-radius: 16px;
+  padding: 28px 20px;
+  text-align: center;
+  color: #57534e;
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.empty p {
+  margin: 4px 0;
+}
+
+.empty-inline {
+  color: #78716c;
+  font-size: 13px;
+  margin: 4px 0 0;
+}
+
+.privacy {
+  font-size: 12px;
+  color: #a8a29e;
+  text-align: center;
+  margin: 14px 0 0;
 }
